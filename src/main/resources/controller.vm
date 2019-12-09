@@ -1,0 +1,25 @@
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@Api(value="", description="")
+public class ${entity.entityName}Controller {
+
+private ${entity.entityName}Service ${entity.entityNameSmall}Service;
+
+public ${entity.entityName}Controller(${entity.entityName}Service ${entity.entityNameSmall}Service) {
+
+this.${entity.entityNameSmall}Service = ${entity.entityNameSmall}Service;
+}
+
+@GetMapping(path="/${entity.entityNameSmall}s")
+@ApiOperation(value="Get all ${entity.entityNameSmall}", response = ${entity.entityName}.class)
+public ${entity.entityName} getAll${entity.entityName}(){
+return ${entity.entityNameSmall}Service.getAll${entity.entityName}();
+}
+
+}

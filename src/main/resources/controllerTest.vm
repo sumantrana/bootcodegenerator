@@ -1,0 +1,58 @@
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
+@WebMvcTest(controller = {${entity.entityName}Controller.class})
+public class ${entity.entityName}ControllerTest {
+
+private MockMvc mockMvc;
+
+@MockBean
+private ${entity.entityName}Service ${entity.entityNameSmall}Service;
+
+
+@BeforeEach
+public void setup(){
+${entity.entityName}Controller ${entity.entityNameSmall}Controller = new ${entity.entityName}Controller(${entity.entityNameSmall}Service);
+mockMvc = MockMvcBuilders.standaloneSetup(${entity.entityNameSmall}Controller).build();
+}
+
+@Test
+public void get${entity.entityName}_WillReturn_${entity.entityName}() throws Exception {
+
+${entity.entityName} ${entity.entityNameSmall} = ${entity.entityName}.builder()
+#foreach( $field in ${entity.entityFieldList} )
+.${field.name}(${field.value})
+#end
+            .build();
+
+given(${entity.entityNameSmall}Service.getAll${entity.entityName}()).willReturn(Arrays.asList(${entity.entityNameSmall}));
+
+mockMvc.perform(get("/ococ/registration/v1/${entity.entityNameSmall}s"))
+
+#foreach( $field in ${entity.entityFieldList} )
+.andExpect(jsonPath("$.${field.name}", is("${field.value}")))
+#end
+;
+
+verify(${entity.entityNameSmall}Service, times(1)).getAll${entity.entityName}(anyString());
+
+}
+}
